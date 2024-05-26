@@ -1,0 +1,71 @@
+import javax.swing.*;
+import java.awt.*;
+public class UI {
+    public static String[] court = new String[64];
+    //first white, then black
+    String[] uniPieces = new String[]{"♖","♘", "♗", "♕", "♔", "♜", "♞", "♝", "♛", "♚"};
+    String[] pawns = new String[]{"♙", "♟"};
+    public static int moveOrder= 0, isOnSquare, moveToSquare;
+    public static void main(String[] args) {
+        CreateUI();
+    }
+    public static void CreateUI(){
+        JFrame frame = new JFrame();
+        JPanel field = new JPanel(new GridLayout(8,8));
+        JPanel sidebar = new JPanel();
+        for (int i = 0; i < 64; i++) {
+            JButton buttons = new JButton(ButtonDefinition(i);
+            //buttons.setFont(new Font("FontName", Font.PLAIN, 50));
+            int finalI = i;
+            buttons.addActionListener(ev -> {
+                ButtonPressed(finalI);
+            });
+            field.add(buttons);
+        }
+        frame.add(field);
+        //frame.add(sidebar);
+        frame.pack();
+        frame.setSize(500, 500);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    public static void ButtonPressed(int buttonNumber){
+        System.out.println(buttonNumber);
+        ProcessInput(buttonNumber);
+
+    }
+
+    public static void ButtonDefinition(int buttonNumber){
+
+    }
+
+    public static void ProcessInput(int buttonNumber){
+        if (moveOrder == 0) {
+            isOnSquare = buttonNumber;
+            moveOrder++;
+        } else if (moveOrder == 1) {
+            moveToSquare = buttonNumber;
+        }
+    }
+
+    //muss iwo aufgerufen werden!!!
+    public static void BordDefinition() {
+        String[] pieces = new String[]{"R", "N", "B", "Q", "K", "B", "N", "R"};
+        for (int i = 0; i <= 63; i++) {
+            court[i] = "0";
+            if (i >= 8 && i <= 15) {
+                court[i] = "bP";
+            }
+            if (i > 47 && i <= 55) {
+                court[i] = "wP";
+            }
+            if (i <= 7) {
+                court[i] = "b" + pieces[i];
+            }
+            if (i > 55) {
+                court[i] = "w" + pieces[i % 8];
+            }
+        }
+    }
+
+}
