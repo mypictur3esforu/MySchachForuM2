@@ -1,21 +1,36 @@
 import javax.swing.*;
 import java.awt.*;
 public class UI {
-    public static String[] court = new String[64];
     //first white, then black
-    String[] uniPieces = new String[]{"♖","♘", "♗", "♕", "♔", "♜", "♞", "♝", "♛", "♚"};
-    String[] pawns = new String[]{"♙", "♟"};
+    public static String[] uniPieces = new String[]{"♖","♘", "♗", "♕", "♔", "♜", "♞", "♝", "♛", "♚", "none"};
+    public static String[] pawns = new String[]{"♙", "♟"};
     public static int moveOrder= 0, isOnSquare, moveToSquare;
+    public static JPanel field = new JPanel(new GridLayout(8,8));
+
     public static void main(String[] args) {
+        Court.BordDefinition();
         CreateUI();
     }
     public static void CreateUI(){
         JFrame frame = new JFrame();
-        JPanel field = new JPanel(new GridLayout(8,8));
+        //JPanel field = new JPanel(new GridLayout(8,8));
         JPanel sidebar = new JPanel();
+        String colour = "black";
         for (int i = 0; i < 64; i++) {
-            JButton buttons = new JButton(ButtonDefinition(i);
-            //buttons.setFont(new Font("FontName", Font.PLAIN, 50));
+            JButton buttons = new JButton(ButtonDefinition(i));
+            buttons.setFont(new Font(buttons.getFont().getFontName(), Font.PLAIN, 25));
+            colour = SwitchColor(colour);
+            if (i % 8 == 0 && i != 0) {
+                System.out.println(i);
+                colour = SwitchColor(colour);
+                System.out.println(colour);
+            }
+            //System.out.println("Button: "+colour);
+            if (colour.equals("white")) {
+                buttons.setBackground(Color.white);
+            }else{
+                buttons.setBackground(Color.black);
+            }
             int finalI = i;
             buttons.addActionListener(ev -> {
                 ButtonPressed(finalI);
@@ -29,43 +44,56 @@ public class UI {
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+    public static void UpdateUI(){
+        
+    }
+
     public static void ButtonPressed(int buttonNumber){
-        System.out.println(buttonNumber);
-        ProcessInput(buttonNumber);
-
-    }
-
-    public static void ButtonDefinition(int buttonNumber){
-
-    }
-
-    public static void ProcessInput(int buttonNumber){
-        if (moveOrder == 0) {
-            isOnSquare = buttonNumber;
-            moveOrder++;
-        } else if (moveOrder == 1) {
-            moveToSquare = buttonNumber;
+        //System.out.println(buttonNumber);
+        ComprehendMoveOrder.MoveOrderOrganizer(buttonNumber);
+        if (moveOrder == 2) {
+            CheckMoves.CheckMove(isOnSquare, moveToSquare);
         }
     }
 
-    //muss iwo aufgerufen werden!!!
-    public static void BordDefinition() {
-        String[] pieces = new String[]{"R", "N", "B", "Q", "K", "B", "N", "R"};
-        for (int i = 0; i <= 63; i++) {
-            court[i] = "0";
-            if (i >= 8 && i <= 15) {
-                court[i] = "bP";
-            }
-            if (i > 47 && i <= 55) {
-                court[i] = "wP";
-            }
-            if (i <= 7) {
-                court[i] = "b" + pieces[i];
-            }
-            if (i > 55) {
-                court[i] = "w" + pieces[i % 8];
-            }
+    static String SwitchColor(String colour){
+        if (colour.isBlank()) {
+            return "black";
+        }
+        if (colour.equals("white")) {
+            return "black";
+        }else{
+            return "white";
         }
     }
 
+    public static String ButtonDefinition(int buttonNumber){
+        int pieceNumber;
+        String[] fieldValue = new String[3];
+        System.arraycopy(Court.court[buttonNumber].split(""), 0, fieldValue, 0, Court.court[buttonNumber].split("").length);
+        if (fieldValue[0].equals("b")) {
+            pieceNumber = 5;
+        }else{
+            pieceNumber = 0;
+        }
+        if (fieldValue[0].equals("0")) {
+            return "";
+        }
+        switch (fieldValue[1]){
+            case "P" -> {if(pieceNumber != 0)pieceNumber = 1;}
+            case "R" -> pieceNumber += 0;
+            case "N" -> pieceNumber += 1;
+            case "B" -> pieceNumber += 2;
+            case "Q" -> pieceNumber += 3;
+            case "K" -> pieceNumber += 4;
+            case null -> pieceNumber = 10;
+            default -> pieceNumber = 10;
+        }
+        if (fieldValue[1].equals("P")) {
+            return pawns[pieceNumber];
+        }else if(!fieldValue[1].isEmpty()){
+            return uniPieces[pieceNumber];
+        }
+        return "";
+    }
 }
