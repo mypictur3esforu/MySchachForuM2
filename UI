@@ -6,15 +6,25 @@ public class UI {
     public static String[] pawns = new String[]{"♙", "♟"};
     public static int moveOrder= 0, isOnSquare, moveToSquare;
     public static JPanel field = new JPanel(new GridLayout(8,8));
+    public static JFrame frame = new JFrame();
 
     public static void main(String[] args) {
         Court.BordDefinition();
         CreateUI();
     }
     public static void CreateUI(){
-        JFrame frame = new JFrame();
         //JPanel field = new JPanel(new GridLayout(8,8));
         JPanel sidebar = new JPanel();
+        UpdateUI();
+        frame.add(field);
+        //frame.add(sidebar);
+        frame.pack();
+        frame.setSize(500, 500);
+        frame.setVisible(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    public static void UpdateUI(){
+        field.removeAll();
         String colour = "black";
         for (int i = 0; i < 64; i++) {
             JButton buttons = new JButton(ButtonDefinition(i));
@@ -38,22 +48,11 @@ public class UI {
             field.add(buttons);
         }
         frame.add(field);
-        //frame.add(sidebar);
-        frame.pack();
-        frame.setSize(500, 500);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-    public static void UpdateUI(){
-        
     }
 
     public static void ButtonPressed(int buttonNumber){
         //System.out.println(buttonNumber);
         ComprehendMoveOrder.MoveOrderOrganizer(buttonNumber);
-        if (moveOrder == 2) {
-            CheckMoves.CheckMove(isOnSquare, moveToSquare);
-        }
     }
 
     static String SwitchColor(String colour){
