@@ -1,0 +1,28 @@
+public class Court {
+    //muss iwo aufgerufen werden!!!
+    public static String[] court = new String[64];
+
+    public static void BordDefinition() {
+        String[] pieces = new String[]{"R", "N", "B", "Q", "K", "B", "N", "R"};
+        for (int i = 0; i <= 63; i++) {
+            court[i] = "0";
+            if (i >= 8 && i <= 15) {
+                court[i] = "bP";
+            }
+            if (i > 47 && i <= 55) {
+                court[i] = "wP";
+            }
+            if (i <= 7) {
+                court[i] = "b" + pieces[i];
+            }
+            if (i > 55) {
+                court[i] = "w" + pieces[i % 8];
+            }
+        }
+    }
+
+    public static void MakeMove(int isOnSquare, int moveToSquare){
+        court[moveToSquare] = court[isOnSquare];
+        court[isOnSquare] = "0";
+    }
+}
