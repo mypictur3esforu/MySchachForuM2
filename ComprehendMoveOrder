@@ -1,0 +1,33 @@
+import java.util.Arrays;
+
+public class ComprehendMoveOrder {
+    static int moveOrder = 0, isOnSquare, moveToSquare;
+    public static void MoveOrderOrganizer(int buttonNumber){
+        ProcessInput(moveOrder, buttonNumber);
+        moveOrder++;
+        if (moveOrder == 2) {
+            if (CheckMoves.CheckMove(isOnSquare, moveToSquare)) {
+                Court.MakeMove(isOnSquare, moveToSquare);
+                UI.UpdateUI();
+                //System.out.println(Arrays.toString(Court.court));
+                moveOrder = 0;
+                System.out.println(moveOrder + "move Order");
+            }else{
+                isOnSquare = moveToSquare;
+                System.out.println("Proceeding isOnSquare: " + isOnSquare);
+                moveToSquare = -1;
+                moveOrder = 1;
+            }
+        }
+    }
+
+    static void ProcessInput(int moveOrder, int buttonNumber){
+        if (moveOrder == 0) {
+            isOnSquare = buttonNumber;
+            System.out.println("isOnSquare: " + isOnSquare);
+        } else if (moveOrder == 1) {
+            moveToSquare = buttonNumber;
+            System.out.println("moveToSquare: " + moveToSquare);
+        }
+    }
+}
