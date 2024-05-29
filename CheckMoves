@@ -1,0 +1,5 @@
+public class CheckMoves {
+    public static boolean CheckMove(int isOnSquare, int moveToSquare){
+        return true;
+    }
+}
