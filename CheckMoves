@@ -1,7 +1,10 @@
 public class CheckMoves {
-    public static int[] secondMover = new int[2];
+    public static int[] secondMover = new int[]{-1, -1};
     public static int[][] rooks = new int[][]{{0, 1000},{7, 1000}, {56, 1000}, {63, 1000}};
+    static int fieldToSearch = -1;
+
     public static boolean CheckMove(int isOnSquare, int moveToSquare){
+        if (isOnSquare == moveToSquare)return false;
         boolean temporary = true;
         switch (Usefull.GetSquaresPieceNotation(isOnSquare)){
             case "R" -> {temporary = CheckColumRow(isOnSquare, moveToSquare); HandleRookMove(isOnSquare, temporary); }
@@ -9,6 +12,7 @@ public class CheckMoves {
             case "B" -> {temporary = CheckDiagonal(isOnSquare, moveToSquare);}
             case "Q" -> {temporary = CheckColumRow(isOnSquare, moveToSquare) || CheckDiagonal(isOnSquare, moveToSquare); }
             case "K" -> {temporary = CheckSurround(isOnSquare, moveToSquare) || CheckCastle(isOnSquare, moveToSquare);}
+            case "P" -> {temporary = CheckPawn(isOnSquare, moveToSquare);}
         }
         if (!temporary || !CheckIfPinned(isOnSquare, moveToSquare)) {
             return false;
@@ -133,17 +137,23 @@ public class CheckMoves {
                 return false;
             }
         }
-        System.out.println("Castling allowed");
-        return RookInPlace(isOnSquare, direction);
+        if(RookInPlace(isOnSquare, direction)){
+            System.out.println("Castling allowed");
+            secondMover[0] = fieldToSearch;
+            secondMover[1] = moveToSquare - direction;
+            return true;
+        }
+        return false;
     }
 
     static boolean RookInPlace(int isOnSquare, int direction){
         int[] rookSquares = new int[]{0, 7, 56, 63};
-        int fieldToSearch = -1, distance = 100;
-        for (int i = 0; i < rookSquares.length; i++) {
-            if (Math.abs(isOnSquare - rookSquares[i]) < distance) {
-                distance = Math.abs(isOnSquare - rookSquares[i]);
-                fieldToSearch = rookSquares[i];
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < rookSquares.length; j++) {
+                if (isOnSquare + (i * direction) == rookSquares[j]) {
+                    fieldToSearch = rookSquares[j];
+                    break;
+                }
             }
         }
         for (int i = 0; isOnSquare + (i * direction) != fieldToSearch + direction; i++) {
@@ -151,17 +161,70 @@ public class CheckMoves {
             if (tempSquare.length == 1) {
                 continue;
             }
-            if (Usefull.CreateFieldValueArray(isOnSquare + (i*direction))[1].equals("R")) {
-                for (int j = 0; j < rooks.length; j++) {
-                    if (rooks[j][0] == isOnSquare + (i * direction)) {
-                        if (rooks[j][1] == 0) {
-                            return true;
-                        }
+            //enhanced for Schleife
+            for (int[] rook : rooks) {
+                if (rook[0] == fieldToSearch) {
+                    if (rook[1] != 1000) {
+                        System.out.println("The rook has already moved! (castling: " + fieldToSearch + ")");
+                        return false;
                     }
                 }
             }
+            if (fieldToSearch != isOnSquare + (3 * direction)) {
+                if (!Usefull.CreateFieldValueArray(fieldToSearch-1)[0].equals("0")) {
+                    System.out.println("The rook can not jump over pieces! (castling: " + fieldToSearch + ")");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    static boolean CheckPawn(int isOnSquare, int moveToSquare){
+        if (!Court.court[moveToSquare].equals("0") && Math.abs(moveToSquare - isOnSquare) != 7 && Math.abs(moveToSquare-isOnSquare) != 9) {
+            System.out.println("Pawns do not take like that!");
+            return false;
+        }
+        int colorWay = 1;
+        if (Usefull.GetColorOfSquaresPiece(isOnSquare).equals("white")) {
+            colorWay = -1;
+        }
+        int amountOfSquares = Math.abs(isOnSquare - moveToSquare);
+        if (moveToSquare - isOnSquare == 8 * colorWay) {
+            return true;
+        }else if (amountOfSquares == 16) {
+            return TwoSquares(isOnSquare, moveToSquare);
+        }else if (amountOfSquares == 7 || amountOfSquares == 9) {
+            return CheckPawnTake(isOnSquare , moveToSquare);
         }
         return false;
+    }
+
+    private static boolean CheckPawnTake(int isOnSquare, int moveToSquare) {
+        int rowOnSquare = isOnSquare / 8;
+        int rowMoveToSquare = moveToSquare / 8;
+        if (Math.abs(rowOnSquare - rowMoveToSquare) != 1 ) {
+            return false;
+        }
+        return !Court.court[moveToSquare].equals("0");
+    }
+
+    static boolean TwoSquares(int isOnSquare, int moveToSquare){
+        int startRow = -1;
+        if (Usefull.GetColorOfSquaresPiece(isOnSquare).equals("white")) {
+            startRow = 6;
+        } else if (Usefull.GetColorOfSquaresPiece(isOnSquare).equals("black")) {
+            startRow = 1;
+        }
+        if ((isOnSquare / 8) != startRow) {
+            System.out.println("The pawn can not go like that! (" + isOnSquare / 8 + ")");
+            return false;
+        }
+        if (!Court.court[isOnSquare - (isOnSquare - moveToSquare)/2].equals("0")) {
+            System.out.println("The pawn can not jump over pieces!");
+            return false;
+        }
+        return true;
     }
 
     static boolean CheckIfPieceIsInBetween(int isOnSquare, int moveToSquare, int movement){
