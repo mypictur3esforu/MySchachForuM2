@@ -1,3 +1,7 @@
+import com.sun.source.tree.WhileLoopTree;
+
+import java.util.Arrays;
+
 public class Court {
     //muss iwo aufgerufen werden!!!
     public static String[] court = new String[64];
@@ -21,8 +25,27 @@ public class Court {
         }
     }
 
+    public static void TestBordDefinition(){
+        Arrays.fill(court, "0");
+        court[56] = "wR";
+        court[60] = "wK";
+        court[63] = "wR";
+        court[50] = "wP";
+        court[41] = "bN";
+        court[0] = "bB";
+        court[1] = "bB";
+    }
+
     public static void MakeMove(int isOnSquare, int moveToSquare){
         court[moveToSquare] = court[isOnSquare];
         court[isOnSquare] = "0";
+        int[] secMover = CheckMoves.secondMover;
+        if (secMover[0] != -1) {
+            Court.court[secMover[1]] = Court.court[secMover[0]];
+            Court.court[secMover[0]] = "0";
+            Arrays.fill(CheckMoves.secondMover, -1);
+        }
+        UI.UpdateUI();
+        WhoseTurn.ChangeTurn();
     }
 }
