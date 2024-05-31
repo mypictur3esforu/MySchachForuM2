@@ -133,7 +133,7 @@ public class CheckMoves {
             return false;
         }
         for (int i = 0; i <= 2; i++) {
-            if (!FindCheck.CheckForChecks(isOnSquare + (i * direction))) {
+            if (!FindCheck.CheckForChecks(isOnSquare + (i * direction), WhoseTurn.turn)) {
                 return false;
             }
         }
@@ -231,7 +231,7 @@ public class CheckMoves {
         if (isOnSquare > moveToSquare) {
             movement *= -1;
         }
-        for (int i = 0; isOnSquare != moveToSquare - movement; isOnSquare += movement) {
+        for (int i = isOnSquare + movement; isOnSquare != moveToSquare - movement; isOnSquare += movement) {
             if (!Court.court[i].equals("0")) {
                 System.out.println("There is a piece in the way! Movement: " + movement);
                 return false;
