@@ -1,0 +1,11 @@
+public class WhoseTurn {
+    public static String turn = "white";
+
+    public static void ChangeTurn(){
+        if (turn.equals("white")) {
+            turn = "black";
+        } else if (turn.equals("black")) {
+            turn = "white";
+        }
+    }
+}
