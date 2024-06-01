@@ -12,14 +12,24 @@ public class UI {
     public static Color black, white;
     public static JButton startButton, winner;
 
+    //Stack Overflow
+    public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static int screenWidth =  screenSize.width;
+    public static int screenHeight = screenSize.height;
+
+    static Dimension minimum = new Dimension(500, 500);
+
     public static void main(String[] args) {
-        Court.BordDefinition();
-        //Court.TestBordDefinition();
+        //Court.BordDefinition();
+        Court.TestBordDefinition();
         CreateUI();
+        //StartEnd.StartGame();
         StartScreen();
     }
 
     public static void CreateUI(){
+        frame.pack();
+        Scale();
         frame.add(sidebar);
         String colour = "black";
         for (int i = 0; i < 64; i++) {
@@ -36,7 +46,8 @@ public class UI {
         }
         //frame.add(field);
         //frame.pack();
-        frame.setSize(500, 500);
+        //frame.setSize(500, 500);
+        //frame.add(field);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -132,12 +143,26 @@ public class UI {
     }
 
     public static void EndScreen(String colorWon){
-        UI.frame.remove(UI.field);
+        //frame.remove(UI.field);
+        field.setVisible(false);
         winner = new JButton(colorWon);
         winner.addActionListener(ev -> {
             StartEnd.NewGame();
         });
-        UI.frame.add(winner);
-        UI.frame.setVisible(true);
+        frame.add(winner);
+    }
+
+    public static void Scale(){
+        frame.setSize(screenWidth / 2, screenHeight / 2);
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setMinimumSize(minimum);
+        int fieldSize = frame.getWidth();
+        if (frame.getWidth() < frame.getHeight()) {
+            fieldSize = frame.getHeight();
+        }
+        //field.setSize(300, 300);
+        field.setPreferredSize(minimum);
+        field.setMinimumSize(minimum);
+        field.setMinimumSize(minimum);
     }
 }
