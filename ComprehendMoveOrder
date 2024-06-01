@@ -25,13 +25,14 @@ public class ComprehendMoveOrder {
                 if (isOnSquare == moveToSquare) {
                     isOnSquare = -1;
                     moveOrder = 0;
+                    GetPossibleMoves.possibleMoves = new int[0];
                 }else {
                     isOnSquare = moveToSquare;
                     moveOrder = 1;
+                    GetPossibleMoves.GetPiecesMovesBySquare(isOnSquare, Court.court);
                 }
                 System.out.println("Proceeding isOnSquare: " + isOnSquare);
                 //GetPossibleMoves.GetPiecesMovesBySquare(isOnSquare, Court.court);
-                GetPossibleMoves.possibleMoves = new int[0];
                 UI.UpdateUI();
                 }
             if (Court.court[moveToSquare].equals("0")) {
