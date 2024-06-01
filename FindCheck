@@ -19,7 +19,7 @@ public class FindCheck {
 
     static void ColorCheck(String color){
         for (int potentialCheck : potentialChecks) {
-            if (!Usefull.GetColorOfSquaresPiece(potentialCheck).equals(color)) {
+            if (!Usefull.GetColorOfSquaresPiece(potentialCheck, bord).equals(color)) {
                 realChecks = Usefull.AddToIntArray(potentialCheck, realChecks);
             }
         }
@@ -76,6 +76,9 @@ public class FindCheck {
                     break;
                 }
                 String piece = Usefull.GetSquaresPieceNotation(square + j, bord);
+                if (piece.equals("0")) {
+                    continue;
+                }
                 if (piece.equals("B") || piece.equals("Q")) {
                     checkFrom = square + j;
                     System.out.println("Potential Check: " + checkFrom);
@@ -84,12 +87,16 @@ public class FindCheck {
                 }
                 if (piece.equals("P")) {
                     if (Math.abs(j) == 7 || Math.abs(j) == 9 ) {
+                        if ((j < 0 && Usefull.GetColorOfSquaresPiece(square + j, bord).equals("white")) || (j > 0 && Usefull.GetColorOfSquaresPiece(square + j, bord).equals("black"))) {
+                            break;
+                        }
                         checkFrom = square + j;
                         System.out.println("Potential Check: " + checkFrom);
                         potentialChecks = Usefull.AddToIntArray(checkFrom, potentialChecks);
                         check = true;
                     }
                 }
+                break;
             }
         }
         return check;
