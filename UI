@@ -10,11 +10,13 @@ public class UI {
     public static JFrame frame = new JFrame();
     static String color = "black";
     public static Color black, white;
+    public static JButton startButton, winner;
 
     public static void main(String[] args) {
         Court.BordDefinition();
         //Court.TestBordDefinition();
         CreateUI();
+        StartScreen();
     }
 
     public static void CreateUI(){
@@ -32,8 +34,8 @@ public class UI {
            // System.out.println(Arrays.toString(buttons));
             field.add(button);
         }
-        frame.add(field);
-        frame.pack();
+        //frame.add(field);
+        //frame.pack();
         frame.setSize(500, 500);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -117,11 +119,25 @@ public class UI {
         }
         return "";
     }
-    
+
     public static void StartScreen(){
-        JButton startButton = new JButton("STARTEN");
+        startButton = new JButton("STARTEN");
+        startButton.setFont(new Font("Serif", Font.PLAIN, 50));
+        startButton.setBackground(new Color(0x9D0BFABA, true));
+        //startButton.setSize(400, 400);
         startButton.addActionListener(ev->{
-            
+            StartEnd.StartGame();
         });
+        frame.add(startButton);
+    }
+
+    public static void EndScreen(String colorWon){
+        UI.frame.remove(UI.field);
+        winner = new JButton(colorWon);
+        winner.addActionListener(ev -> {
+            StartEnd.NewGame();
+        });
+        UI.frame.add(winner);
+        UI.frame.setVisible(true);
     }
 }
