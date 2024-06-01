@@ -2,8 +2,7 @@ public class ComprehendMoveOrder {
     static int moveOrder = 0, isOnSquare = -1, moveToSquare;
 
     public static void MoveOrderOrganizer(int buttonNumber){
-        //FindCheck.CheckForChecks(60, WhoseTurn.turn, Court.court);
-        if (Usefull.CreateFieldValueArray(buttonNumber)[0].equals("0") && moveOrder == 0) {
+        if (Usefull.CreateFieldValueArray(buttonNumber, Court.court)[0].equals("0") && moveOrder == 0) {
             //skip
         }else {
             ProcessInput(moveOrder, buttonNumber);
