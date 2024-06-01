@@ -12,8 +12,8 @@ public class OtherOccurrences {
     }
     public static void EnPassantable(int isOnSquare, int moveToSquare){
         System.out.println("EnPassantSquare: " + enPassantSquare);
+        enPassantSquare = -1;
         if (!Usefull.CheckIfPawn(isOnSquare, Court.court)) {
-            enPassantSquare = -1;
             return;
         }
         if (Math.abs(moveToSquare - isOnSquare) == 16) {
@@ -39,7 +39,7 @@ public class OtherOccurrences {
                 }
             }
         }
-        StartEndScreens.EndScreen();
+        StartEnd.End();
         return true;
     }
 }
