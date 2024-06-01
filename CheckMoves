@@ -1,9 +1,14 @@
 public class CheckMoves {
     public static int[] secondMover = new int[]{-1, -1};
     public static int[][] rooks = new int[][]{{0, 1000},{7, 1000}, {56, 1000}, {63, 1000}};
+    //white goes first
+    static boolean[] kingMoved = new boolean[]{false, false};
     static int fieldToSearch = -1;
 
     public static boolean CheckMove(int isOnSquare, int moveToSquare){
+        if (!Usefull.GetColorOfSquaresPiece(isOnSquare).equals(WhoseTurn.turn)) {
+            return false;
+        }
         if (isOnSquare == moveToSquare)return false;
         boolean temporary = true;
         switch (Usefull.GetSquaresPieceNotation(isOnSquare, Court.court)){
@@ -61,7 +66,8 @@ public class CheckMoves {
     }
 
     static String CheckIfColumOrRowMovement(int isOnSquare, int moveToSquare){
-        if (Math.abs(moveToSquare - isOnSquare) < 8 ) {
+        int minimum = isOnSquare - (isOnSquare % 8), maximum = minimum + 7;
+        if (moveToSquare >= minimum && moveToSquare <= maximum) {
             return "row";
         }
         if (Math.abs(moveToSquare - isOnSquare) % 8 == 0) {
@@ -151,6 +157,7 @@ public class CheckMoves {
         for (int z = 0; z <= 1; z++) {
             for (int i = 0; i < possibleSquares.length; i++) {
                 if (isOnSquare + possibleSquares[i] * direction == moveToSquare) {
+                    KingMoves();
                     return true;
                 }
             }
@@ -160,8 +167,19 @@ public class CheckMoves {
         return false;
     }
 
+    static void KingMoves(){
+        if (WhoseTurn.turn.equals("white")) {
+            kingMoved[0] = true;
+        }else if (WhoseTurn.turn.equals("black")) {
+            kingMoved[1] = true;
+        }
+    }
+
     static boolean CheckCastle(int isOnSquare, int moveToSquare){
         int direction = 1;
+        if (kingMoved == null) {
+
+        }
         if (isOnSquare > moveToSquare) {
             direction *= -1;
         }
@@ -174,10 +192,18 @@ public class CheckMoves {
                 return false;
             }
         }
+        int position = 1;
+        if (WhoseTurn.turn.equals("white")) {
+            position = 0;
+        }
+        if (kingMoved[position]) {
+            return false;
+        }
         if(RookInPlace(isOnSquare, direction)){
             System.out.println("Castling allowed");
             secondMover[0] = fieldToSearch;
             secondMover[1] = moveToSquare - direction;
+            KingMoves();
             return true;
         }
         return false;
@@ -270,7 +296,7 @@ public class CheckMoves {
         }
         for (int i = isOnSquare + movement; isOnSquare != moveToSquare - movement; isOnSquare += movement) {
             if (!Court.court[i].equals("0")) {
-                System.out.println("There is a piece in the way! Movement: " + movement);
+                System.out.println("There is a piece in the way! Movement: " + movement + ". Square: " + isOnSquare);
                 return false;
             }
         }
