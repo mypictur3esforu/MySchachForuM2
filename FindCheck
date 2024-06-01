@@ -3,8 +3,10 @@ import java.util.Arrays;
 public class FindCheck {
     //if there´s a check method returns false
     public static int[] potentialChecks = new int[0], realChecks;
+    static String[] bord;
 
-    public static boolean CheckForChecks(int square, String color){
+    public static boolean CheckForChecks(int square, String color, String[] givenBord){
+        bord = givenBord;
         realChecks = new int[0];
         ColumnRowChecks(square, "row");
         ColumnRowChecks(square, "column");
@@ -21,6 +23,7 @@ public class FindCheck {
                 realChecks = Usefull.AddToIntArray(potentialCheck, realChecks);
             }
         }
+        potentialChecks = new int[0];
     }
 
     static boolean ColumnRowChecks(int square, String checkType) {
@@ -38,8 +41,8 @@ public class FindCheck {
         while (true) {
             for (int i = 1; square + (i * direction) >= minimum && square + (i * direction) <= maximum; i++) {
                 String piece = "";
-                if (!Court.court[square + (i * direction)].equals("0")) {
-                    piece = Usefull.GetSquaresPieceNotation(square + i * direction);
+                if (!bord[square + (i * direction)].equals("0")) {
+                    piece = Usefull.GetSquaresPieceNotation(square + i * direction, bord);
                 }
                 if (piece.equals("Q") || piece.equals("R")) {
                     checkFrom = square + i * direction;
@@ -66,7 +69,7 @@ public class FindCheck {
                 if ((Math.abs((square + j - diagonals[i]) / 8) -  (square + j) / 8) == 2) {
                     break;
                 }
-                String piece = Usefull.GetSquaresPieceNotation(square + j);
+                String piece = Usefull.GetSquaresPieceNotation(square + j, bord);
                 if (piece.equals("B") || piece.equals("Q")) {
                     checkFrom = square + j;
                     System.out.println("Potential Check: " + checkFrom);
@@ -96,7 +99,7 @@ public class FindCheck {
                     continue;
                 }
                 int checkFrom = square + (knightMovement[i] * direction);
-                if (Usefull.GetSquaresPieceNotation(checkFrom).equals("N")) {
+                if (Usefull.GetSquaresPieceNotation(checkFrom, bord).equals("N")) {
                     System.out.println("Potential Check: " + checkFrom);
                     potentialChecks = Usefull.AddToIntArray(checkFrom, potentialChecks);
                     check = true;
