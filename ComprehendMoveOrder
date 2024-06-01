@@ -1,6 +1,3 @@
-import java.net.Inet4Address;
-import java.util.Arrays;
-
 public class ComprehendMoveOrder {
     static int moveOrder = 0, isOnSquare = -1, moveToSquare;
 
