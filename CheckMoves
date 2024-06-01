@@ -154,7 +154,7 @@ public class CheckMoves {
     }
 
     static boolean CheckKnightLineJump(int isOnSquare, int moveToSquare){
-        return Math.abs(moveToSquare % 8 - isOnSquare % 8) <= 2; // line jump true
+        return Math.abs(moveToSquare % 8 - isOnSquare % 8) >= 2; // line jump true
     }
 
     static boolean CheckLMovement(int isOnSquare, int moveToSquare){
@@ -163,7 +163,7 @@ public class CheckMoves {
         for (int z = 0; z <= 1; z++) {
             for (int i = 0; i < possibleSquares.length; i++) {
                 if (isOnSquare + possibleSquares[i] * direction == moveToSquare) {
-                    return CheckKnightLineJump(isOnSquare, moveToSquare);
+                    return !CheckKnightLineJump(isOnSquare, moveToSquare);
                 }
             }
             direction *= -1;
@@ -177,6 +177,9 @@ public class CheckMoves {
         int direction = 1;
         for (int z = 0; z <= 1; z++) {
             for (int i = 0; i < possibleSquares.length; i++) {
+                if (CheckKnightLineJump(isOnSquare, moveToSquare)) {
+                    return false;
+                }
                 if (isOnSquare + possibleSquares[i] * direction == moveToSquare && !FindCheck.CheckForChecks(isOnSquare + possibleSquares[i] * direction, WhoseTurn.turn, Court.court)) {
                     //KingMoves();
                     return true;
