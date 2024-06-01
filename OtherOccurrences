@@ -1,0 +1,45 @@
+public class OtherOccurrences {
+    public static int enPassantSquare = -1;
+    public static void PawnReachedEnd(int square){
+        if (!Usefull.CheckIfPawn(square, Court.court)) {
+            return;
+        }
+        if (WhoseTurn.turn.equals("white") && square / 8 == 0) {
+            Court.court[square] = "wQ";
+        } else if (WhoseTurn.turn.equals("black") && square / 8 == 7) {
+            Court.court[square] = "bQ";
+        }
+    }
+    public static void EnPassantable(int isOnSquare, int moveToSquare){
+        System.out.println("EnPassantSquare: " + enPassantSquare);
+        if (!Usefull.CheckIfPawn(isOnSquare, Court.court)) {
+            enPassantSquare = -1;
+            return;
+        }
+        if (Math.abs(moveToSquare - isOnSquare) == 16) {
+            int direction = 1;
+            if (moveToSquare - isOnSquare < 0) {
+                direction *= -1;
+            }
+            enPassantSquare = moveToSquare - 8 * direction;
+        }
+    }
+
+    public static boolean CheckMate(){
+        //Checks other color
+        //int[] possibleMoves = new int[0];
+        for (int i = 0; i < Court.court.length; i++) {
+            if (!Usefull.GetColorOfSquaresPiece(i, Court.court).equals(WhoseTurn.turn)) {
+                continue;
+            }
+            for (int j = 0; j < GetPossibleMoves.GetPiecesMovesBySquare(i, Court.court).length; j++) {
+                //possibleMoves = Usefull.AddToIntArray(GetPossibleMoves.GetPiecesMovesBySquare(i, Court.court)[j], possibleMoves);
+                if (GetPossibleMoves.GetPiecesMovesBySquare(i, Court.court).length > 0) {
+                    return false;
+                }
+            }
+        }
+        StartEndScreens.EndScreen();
+        return true;
+    }
+}
