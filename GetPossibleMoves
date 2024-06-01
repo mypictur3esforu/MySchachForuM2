@@ -11,10 +11,10 @@ public class GetPossibleMoves {
         int[] directions = new int[0];
         switch (piece){
             //1 testet alles -> jedes Feld wird auf Condition geprüft!
-            case "R" -> directions = new int[]{1};
             case "B" -> directions = new int[]{7,9};
             case "N" -> directions = new int[]{6, 10, 15, 17};
-            case "K", "Q" -> directions = new int[]{1};
+            case "K", "Q", "R" -> directions = new int[]{1};
+            case "P" -> directions = new  int[]{7, 8, 9};
             case "0" -> {return possibleMoves;}
         }
         GetMoves(square, directions);
