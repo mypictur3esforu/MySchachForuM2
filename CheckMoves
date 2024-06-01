@@ -6,7 +6,7 @@ public class CheckMoves {
     static int fieldToSearch = -1;
 
     public static boolean CheckMove(int isOnSquare, int moveToSquare){
-        if (!Usefull.GetColorOfSquaresPiece(isOnSquare).equals(WhoseTurn.turn)) {
+        if (!Usefull.GetColorOfSquaresPiece(isOnSquare, Court.court).equals(WhoseTurn.turn)) {
             System.out.println("It is " + WhoseTurn.turn + "´s turn!");
             return false;
         }
@@ -20,18 +20,30 @@ public class CheckMoves {
             case "K" -> {temporary = CheckSurround(isOnSquare, moveToSquare) || CheckCastle(isOnSquare, moveToSquare);}
             case "P" -> {temporary = CheckPawn(isOnSquare, moveToSquare);}
         }
-        if (!temporary || !CheckIfPinned(isOnSquare, moveToSquare)) {
+        if (!temporary /*|| !CheckIfPinned(isOnSquare, moveToSquare)*/) {
+            return false;
+        }
+        String[] simulatedBord = Usefull.SimulateMove(isOnSquare, moveToSquare, Court.court);
+        if (FindCheck.CheckForChecks(Usefull.GetKingsPosition(WhoseTurn.turn, simulatedBord), WhoseTurn.turn, simulatedBord )) {
             return false;
         }
         return CheckIfPieceCanBeTaken(isOnSquare, moveToSquare);
     }
 
     static boolean CheckIfPinned(int isOnSquare, int moveToSquare){
-        return true;
+        //gib zurück, ob das Feld FindeColorKönigsPosition auf dem Brett, auf dem der Zug bereits gezogen wurde im Schach steht; zerstört das ganze Programm
+        //return FindCheck.CheckForChecks(Usefull.GetKingsPosition(WhoseTurn.turn, Court.court), WhoseTurn.turn, Usefull.SimulateMove(isOnSquare, moveToSquare, Court.court));
+        if (FindCheck.CheckForChecks(Usefull.GetKingsPosition(WhoseTurn.turn, Court.court), WhoseTurn.turn, Court.court)) {
+            return true;
+        }
+        if (FindCheck.CheckForChecks(Usefull.GetKingsPosition(WhoseTurn.turn, Court.court), WhoseTurn.turn, Usefull.SimulateMove(isOnSquare, moveToSquare, Court.court))) {
+            System.out.println("This piece is pinned and is not allowed to go there!");
+            return false;
+        }else return true;
     }
 
     static boolean CheckIfPieceCanBeTaken(int isOnSquare, int moveToSquare){
-        if(Usefull.GetColorOfSquaresPiece(isOnSquare).equals(Usefull.GetColorOfSquaresPiece(moveToSquare))){
+        if(Usefull.GetColorOfSquaresPiece(isOnSquare, Court.court).equals(Usefull.GetColorOfSquaresPiece(moveToSquare, Court.court))){
             System.out.println("You can not take your own pieces!");
             return false;
         }
@@ -230,7 +242,7 @@ public class CheckMoves {
             }
         }
         for (int i = 0; isOnSquare + (i * direction) != fieldToSearch + direction; i++) {
-            String[] tempSquare = Usefull.CreateFieldValueArray(isOnSquare + ( i * direction));
+            String[] tempSquare = Usefull.CreateFieldValueArray(isOnSquare + ( i * direction), Court.court);
             if (tempSquare.length == 1) {
                 continue;
             }
@@ -244,7 +256,7 @@ public class CheckMoves {
                 }
             }
             if (fieldToSearch != isOnSquare + (3 * direction)) {
-                if (!Usefull.CreateFieldValueArray(fieldToSearch-1)[0].equals("0")) {
+                if (!Usefull.CreateFieldValueArray(fieldToSearch-1, Court.court)[0].equals("0")) {
                     System.out.println("The rook can not jump over pieces! (castling: " + fieldToSearch + ")");
                     return false;
                 }
@@ -259,7 +271,7 @@ public class CheckMoves {
             return false;
         }
         int colorWay = 1;
-        if (Usefull.GetColorOfSquaresPiece(isOnSquare).equals("white")) {
+        if (Usefull.GetColorOfSquaresPiece(isOnSquare, Court.court).equals("white")) {
             colorWay = -1;
         }
         int amountOfSquares = Math.abs(isOnSquare - moveToSquare);
@@ -268,25 +280,29 @@ public class CheckMoves {
         }else if (amountOfSquares == 16) {
             return TwoSquares(isOnSquare, moveToSquare);
         }else if (amountOfSquares == 7 || amountOfSquares == 9) {
-            return CheckPawnTake(isOnSquare , moveToSquare);
+            return CheckPawnTake(isOnSquare , moveToSquare, colorWay);
         }
         return false;
     }
 
-    private static boolean CheckPawnTake(int isOnSquare, int moveToSquare) {
+    private static boolean CheckPawnTake(int isOnSquare, int moveToSquare, int direction) {
         int rowOnSquare = isOnSquare / 8;
         int rowMoveToSquare = moveToSquare / 8;
-        if (Math.abs(rowOnSquare - rowMoveToSquare) != 1 ) {
+        if (rowMoveToSquare - rowOnSquare != direction && moveToSquare != OtherOccurrences.enPassantSquare) {
             return false;
+        }
+        if (moveToSquare == OtherOccurrences.enPassantSquare) {
+            secondMover = new int[]{OtherOccurrences.enPassantSquare - 8 * direction, -2};
+            return true;
         }
         return !Court.court[moveToSquare].equals("0");
     }
 
     static boolean TwoSquares(int isOnSquare, int moveToSquare){
         int startRow = -1;
-        if (Usefull.GetColorOfSquaresPiece(isOnSquare).equals("white")) {
+        if (Usefull.GetColorOfSquaresPiece(isOnSquare, Court.court).equals("white")) {
             startRow = 6;
-        } else if (Usefull.GetColorOfSquaresPiece(isOnSquare).equals("black")) {
+        } else if (Usefull.GetColorOfSquaresPiece(isOnSquare, Court.court).equals("black")) {
             startRow = 1;
         }
         if ((isOnSquare / 8) != startRow) {
