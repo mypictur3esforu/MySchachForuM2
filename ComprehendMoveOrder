@@ -1,19 +1,23 @@
+import java.net.Inet4Address;
 import java.util.Arrays;
 
 public class ComprehendMoveOrder {
-    static int moveOrder = 0, isOnSquare, moveToSquare;
+    static int moveOrder = 0, isOnSquare = -1, moveToSquare;
+
     public static void MoveOrderOrganizer(int buttonNumber){
-        FindCheck.CheckForChecks(60, WhoseTurn.turn);
+        //FindCheck.CheckForChecks(60, WhoseTurn.turn, Court.court);
         if (Usefull.CreateFieldValueArray(buttonNumber)[0].equals("0") && moveOrder == 0) {
             //skip
         }else {
             ProcessInput(moveOrder, buttonNumber);
+            GetPossibleMoves.GetPiecesMovesBySquare(isOnSquare, Court.court);
+            //GetPossibleMoves.possibleMoves = new int[0]
             moveOrder++;
+            UI.UpdateUI();
         }
         if (moveOrder == 2) {
             if (CheckMoves.CheckMove(isOnSquare, moveToSquare)) {
                 Court.MakeMove(isOnSquare, moveToSquare);
-                //UI.CreateUI();
                 //System.out.println(Arrays.toString(Court.court));
                 moveOrder = 0;
                 System.out.println("Move sucessful!\n" + moveOrder + " move Order");
@@ -26,14 +30,16 @@ public class ComprehendMoveOrder {
                     moveOrder = 1;
                 }
                 System.out.println("Proceeding isOnSquare: " + isOnSquare);
+                //GetPossibleMoves.GetPiecesMovesBySquare(isOnSquare, Court.court);
+                GetPossibleMoves.possibleMoves = new int[0];
+                UI.UpdateUI();
                 }
             if (Court.court[moveToSquare].equals("0")) {
                 moveOrder = 0;
                 isOnSquare = -1;
             }
-
-
         }
+        UI.UpdateUI();
     }
 
     static void ProcessInput(int moveOrder, int buttonNumber){
