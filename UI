@@ -5,22 +5,32 @@ public class UI {
     //first white, then black
     public static String[] uniPieces = new String[]{"♖","♘", "♗", "♕", "♔", "♜", "♞", "♝", "♛", "♚", "none"};
     public static String[] pawns = new String[]{"♙", "♟"};
-    public static JPanel field = new JPanel(new GridLayout(8,8)), sidebar = new JPanel();
+    public static JPanel field = new JPanel(new GridLayout(8,8)), sidebar = new JPanel(new GridLayout(2, 1));
     public static JButton[] buttons = new JButton[64];
     public static JFrame frame = new JFrame();
+    public static JPanel big = new JPanel(new GridLayout(1, 2));
     static String color = "black";
     public static Color black, white;
-    public static JButton startButton, winner;
+    public static JButton startButton, winner, settings, archive;
+    ;
+
+    //Stack Overflow
+    public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static int screenWidth =  screenSize.width;
+    public static int screenHeight = screenSize.height;
+
+    static Dimension minimum = new Dimension(500, 500);
 
     public static void main(String[] args) {
         Court.BordDefinition();
         //Court.TestBordDefinition();
         CreateUI();
-        StartScreen();
+        //StartEnd.StartGame();
+        //StartScreen();
     }
 
     public static void CreateUI(){
-        frame.add(sidebar);
+        CreateSideBar();
         String colour = "black";
         for (int i = 0; i < 64; i++) {
             JButton button = new JButton(ButtonDefinition(i));
@@ -34,11 +44,15 @@ public class UI {
            // System.out.println(Arrays.toString(buttons));
             field.add(button);
         }
-        //frame.add(field);
+        big.add(field);
+        big.add(sidebar);
+        frame.add(big);
         //frame.pack();
-        frame.setSize(500, 500);
+        //frame.setSize(500, 500);
+        //frame.add(field);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Scale();
     }
 
     public static void UpdateUI(){
@@ -132,12 +146,31 @@ public class UI {
     }
 
     public static void EndScreen(String colorWon){
-        UI.frame.remove(UI.field);
+        //frame.remove(UI.field);
+        field.setVisible(false);
         winner = new JButton(colorWon);
         winner.addActionListener(ev -> {
             StartEnd.NewGame();
         });
-        UI.frame.add(winner);
-        UI.frame.setVisible(true);
+        frame.add(winner);
     }
+
+    public static void Scale(){
+        frame.setSize(screenWidth / 2, screenHeight / 2);
+        //frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setMinimumSize(minimum);
+        int fieldSize = frame.getWidth();
+        if (frame.getWidth() < frame.getHeight()) {
+            fieldSize = frame.getHeight();
+        }
+        //field.setSize(fieldSize, fieldSize);
+        }
+
+        public static void CreateSideBar(){
+        settings = new JButton("Settings");
+        settings.setBackground(new Color(0x0EE6E6));
+        sidebar.add(settings);
+        archive = new JButton("Archive");
+        sidebar.add(archive);
+        }
 }
