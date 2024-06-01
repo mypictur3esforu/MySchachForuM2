@@ -6,7 +6,7 @@ public class CheckMoves {
     public static boolean CheckMove(int isOnSquare, int moveToSquare){
         if (isOnSquare == moveToSquare)return false;
         boolean temporary = true;
-        switch (Usefull.GetSquaresPieceNotation(isOnSquare)){
+        switch (Usefull.GetSquaresPieceNotation(isOnSquare, Court.court)){
             case "R" -> {temporary = CheckColumRow(isOnSquare, moveToSquare); HandleRookMove(isOnSquare, temporary); }
             case "N" -> {temporary = CheckLMovement(isOnSquare, moveToSquare);}
             case "B" -> {temporary = CheckDiagonal(isOnSquare, moveToSquare);}
@@ -71,12 +71,29 @@ public class CheckMoves {
     }
 
     static boolean CheckDiagonal(int isOnSquare, int moveToSquare){
+        int steps = GetStepsDiagonals(isOnSquare, moveToSquare);
+        if (!CheckLineJumps(isOnSquare, moveToSquare)) {
+            return false;
+        }
         int movement = CheckWhichDiagonal(isOnSquare, moveToSquare);
         if (movement == 0) {
             System.out.println("This piece is not able to go there! (diagonally)");
             return false;
         }
         return CheckIfPieceIsInBetween(isOnSquare, moveToSquare, movement);
+    }
+
+    static int GetStepsDiagonals(int isOnSquare, int moveTOSquare){
+        int direction = 0;
+        if (Math.abs(moveTOSquare - isOnSquare) % 9 == 0) {
+            direction = 9;
+        }else if (Math.abs(moveTOSquare - isOnSquare) % 7 == 0) {
+            direction = 7;
+        }
+        if (isOnSquare > moveTOSquare) {
+            direction *= -1;
+        }
+        return direction;
     }
 
     static int CheckWhichDiagonal(int isOnSquare, int moveToSquare){
@@ -91,6 +108,26 @@ public class CheckMoves {
             return movement * 9;
         }
         return 0;
+    }
+
+    static boolean CheckLineJumps(int isOnSquare, int moveToSquare){
+        int steps = GetStepsDiagonals(isOnSquare, moveToSquare);
+        int end = moveToSquare;
+        if (isOnSquare > moveToSquare) {
+            end = isOnSquare + (isOnSquare - moveToSquare);
+        }
+        for (int i = 0; isOnSquare + i >= 0 && isOnSquare + i <= 63 && isOnSquare + i != moveToSquare; i += steps) {
+            if (steps == 0) {break;}
+            int oneForward = isOnSquare + i, twoForward = oneForward + steps;
+            System.out.println(twoForward % 8);
+            System.out.println(oneForward % 8);
+            int difference = Math.abs((isOnSquare + i + steps) % 8 - (isOnSquare + i) % 8);
+            if (difference > 1 || twoForward / 8 == oneForward / 8) {
+                System.out.println("Bishops can not jump lines!");
+                return false;
+            }
+        }
+        return true;
     }
 
     static boolean CheckLMovement(int isOnSquare, int moveToSquare){
@@ -133,7 +170,7 @@ public class CheckMoves {
             return false;
         }
         for (int i = 0; i <= 2; i++) {
-            if (!FindCheck.CheckForChecks(isOnSquare + (i * direction), WhoseTurn.turn)) {
+            if (!FindCheck.CheckForChecks(isOnSquare + (i * direction), WhoseTurn.turn, Court.court)) {
                 return false;
             }
         }
