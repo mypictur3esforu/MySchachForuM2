@@ -6,15 +6,14 @@ public class UI {
     //first white, then black
     public static String[] uniPieces = new String[]{"♖","♘", "♗", "♕", "♔", "♜", "♞", "♝", "♛", "♚", "none"};
     public static String[] pawns = new String[]{"♙", "♟"};
-    public static int moveOrder= 0, isOnSquare, moveToSquare;
     //public static JPanel field = new JPanel(new GridLayout(8,8));
     public static JButton[] buttons = new JButton[64];
     public static JFrame frame = new JFrame();
+    static String color = "black";
 
     public static void main(String[] args) {
-        JButton b;
-        Court.BordDefinition();
-        //Court.TestBordDefinition();
+        //Court.BordDefinition();
+        Court.TestBordDefinition();
         CreateUI();
     }
     public static void CreateUI(){
@@ -25,18 +24,7 @@ public class UI {
         for (int i = 0; i < 64; i++) {
             JButton button = new JButton(ButtonDefinition(i));
             button.setFont(new Font(button.getFont().getFontName(), Font.PLAIN, 25));
-            colour = SwitchColor(colour);
-            if (i % 8 == 0 && i != 0) {
-                System.out.println(i);
-                colour = SwitchColor(colour);
-                System.out.println(colour);
-            }
-            //System.out.println("Button: "+colour);
-            if (colour.equals("white")) {
-                button.setBackground(Color.white);
-            }else{
-                button.setBackground(Color.lightGray);
-            }
+            button.setBackground(BackgroundColor(i));
             int finalI = i;
             button.addActionListener(ev -> {
                 ButtonPressed(finalI);
@@ -52,15 +40,40 @@ public class UI {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     public static void UpdateUI(){
+        color = "black";
         for (int i = 0; i < buttons.length; i++) {
             //System.out.println(i +"\n" + Arrays.toString(buttons));
             buttons[i].setText(ButtonDefinition(i));
+            buttons[i].setBackground(BackgroundColor(i));
+        }
+        if (ComprehendMoveOrder.isOnSquare != -1) {
+            for (int i = 0; i < GetPossibleMoves.possibleMoves.length; i++) {
+                buttons[GetPossibleMoves.possibleMoves[i]].setBackground(Color.CYAN);
+            }
+        }
+        if (ComprehendMoveOrder.isOnSquare != -1) {
+            buttons[ComprehendMoveOrder.isOnSquare].setBackground(Color.MAGENTA);
         }
     }
 
     public static void ButtonPressed(int buttonNumber){
         //System.out.println(buttonNumber);
         ComprehendMoveOrder.MoveOrderOrganizer(buttonNumber);
+    }
+
+    static Color BackgroundColor(int buttonNumber){
+        color= SwitchColor(color);
+        if (buttonNumber % 8 == 0 && buttonNumber != 0) {
+            //System.out.println(i);
+            color = SwitchColor(color);
+            //System.out.println(colour);
+        }
+        //System.out.println("Button: "+colour);
+        if (color.equals("white")) {
+            return Color.white;
+        }else{
+            return Color.lightGray;
+        }
     }
 
     static String SwitchColor(String colour){
