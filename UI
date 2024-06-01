@@ -10,10 +10,11 @@ public class UI {
     public static JButton[] buttons = new JButton[64];
     public static JFrame frame = new JFrame();
     static String color = "black";
+    public static Color black, white;
 
     public static void main(String[] args) {
-        //Court.BordDefinition();
-        Court.TestBordDefinition();
+        Court.BordDefinition();
+        //Court.TestBordDefinition();
         CreateUI();
     }
     public static void CreateUI(){
@@ -48,11 +49,11 @@ public class UI {
         }
         if (ComprehendMoveOrder.isOnSquare != -1) {
             for (int i = 0; i < GetPossibleMoves.possibleMoves.length; i++) {
-                buttons[GetPossibleMoves.possibleMoves[i]].setBackground(Color.CYAN);
+                buttons[GetPossibleMoves.possibleMoves[i]].setBackground(new Color(88, 239, 152));
             }
         }
         if (ComprehendMoveOrder.isOnSquare != -1) {
-            buttons[ComprehendMoveOrder.isOnSquare].setBackground(Color.MAGENTA);
+            buttons[ComprehendMoveOrder.isOnSquare].setBackground(new Color(243, 109, 226));
         }
     }
 
@@ -70,9 +71,10 @@ public class UI {
         }
         //System.out.println("Button: "+colour);
         if (color.equals("white")) {
-            return Color.white;
+            return white = new Color(236, 255, 255);
         }else{
-            return Color.lightGray;
+            //return Color.lightGray;
+            return black = new Color(18, 160, 177);
         }
     }
 
