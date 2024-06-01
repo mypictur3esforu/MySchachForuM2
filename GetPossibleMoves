@@ -1,0 +1,40 @@
+import java.util.Arrays;
+
+public class GetPossibleMoves {
+    static String[] bord;
+    public static int[] possibleMoves = new int[0];
+
+    public static int[] GetPiecesMovesBySquare(int square, String[] givenBord){
+        bord = givenBord;
+        possibleMoves = new int[0];
+        String piece = Usefull.GetSquaresPieceNotation(square, bord);
+        int[] directions = new int[0];
+        switch (piece){
+            //1 testet alles -> jedes Feld wird auf Condition geprüft!
+            case "R" -> directions = new int[]{1};
+            case "B" -> directions = new int[]{7,9};
+            case "N" -> directions = new int[]{6, 10, 15, 17};
+            case "K", "Q" -> directions = new int[]{1};
+            case "0" -> {return possibleMoves;}
+        }
+        GetMoves(square, directions);
+        return possibleMoves;
+    }
+
+    static void GetMoves(int square, int[] directions){
+        int frontOrBack = 1;
+        while (true) {
+            for (int i = 0; i < directions.length; i++) {
+                for (int j = directions[i]; square + j * frontOrBack >= 0 && square + j * frontOrBack <= 63; j += directions[i]) {
+                    if (CheckMoves.CheckMove(square, square + j * frontOrBack)) {
+                        possibleMoves = Usefull.AddToIntArray(square + j * frontOrBack, possibleMoves);
+                    }
+                }
+            }
+            if (frontOrBack == 1) {
+                frontOrBack = -1;
+            }else break;
+        }
+        System.out.println("Moves: " + Arrays.toString(possibleMoves));
+    }
+}
