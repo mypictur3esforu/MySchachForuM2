@@ -141,13 +141,17 @@ public class CheckMoves {
         return true;
     }
 
+    static boolean CheckKnightLineJump(int isOnSquare, int moveToSquare){
+        return Math.abs(moveToSquare % 8 - isOnSquare % 8) <= 2; // line jump true
+    }
+
     static boolean CheckLMovement(int isOnSquare, int moveToSquare){
         int[] possibleSquares = new int[]{6, 10, 15, 17};
         int direction = 1;
         for (int z = 0; z <= 1; z++) {
             for (int i = 0; i < possibleSquares.length; i++) {
                 if (isOnSquare + possibleSquares[i] * direction == moveToSquare) {
-                    return true;
+                    return CheckKnightLineJump(isOnSquare, moveToSquare);
                 }
             }
             direction *= -1;
