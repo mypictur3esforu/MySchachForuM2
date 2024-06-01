@@ -292,7 +292,7 @@ public class CheckMoves {
             return false;
         }
         if (moveToSquare == OtherOccurrences.enPassantSquare) {
-            secondMover = new int[]{OtherOccurrences.enPassantSquare - 8 * direction, -2};
+            if(ComprehendMoveOrder.moveToSquare == OtherOccurrences.enPassantSquare)secondMover = new int[]{OtherOccurrences.enPassantSquare - 8 * direction, -2};
             return true;
         }
         return !Court.court[moveToSquare].equals("0");
