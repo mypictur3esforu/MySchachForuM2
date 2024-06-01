@@ -39,18 +39,21 @@ public class FindCheck {
             direction = 8;
         }
         while (true) {
+            int possibleCheck = -1;
+            String piece = "";
             for (int i = 1; square + (i * direction) >= minimum && square + (i * direction) <= maximum; i++) {
-                String piece = "";
                 if (!bord[square + (i * direction)].equals("0")) {
                     piece = Usefull.GetSquaresPieceNotation(square + i * direction, bord);
+                    possibleCheck = square + i * direction;
+                    break;
                 }
+            }
                 if (piece.equals("Q") || piece.equals("R")) {
-                    checkFrom = square + i * direction;
+                    checkFrom = possibleCheck;
                     System.out.println("Potential Check: " + checkFrom);
                     potentialChecks = Usefull.AddToIntArray(checkFrom, potentialChecks);
                     check = true;
                 }
-            }
             if (direction > 0) {
                 direction *= -1;
             }else{
@@ -66,6 +69,9 @@ public class FindCheck {
         int[] diagonals = new int[]{7, -7, 9, -9};
         for (int i = 0; i < diagonals.length; i++) {
             for (int j = diagonals[i]; square + j >= 0 && square + j <= 63; j += diagonals[i]) {
+                if (!CheckMoves.CheckLineJumps(square, square + j)) {
+                    break;
+                }
                 if ((Math.abs((square + j - diagonals[i]) / 8) -  (square + j) / 8) == 2) {
                     break;
                 }
