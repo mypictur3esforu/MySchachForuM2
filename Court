@@ -27,16 +27,17 @@ public class Court {
 
     public static void TestBordDefinition(){
         Arrays.fill(court, "0");
-        court[56] = "wR";
+        court[0] = "wB";
+        court[7] = "bR";
+        //court[1] = "bB";
+        court[59] = "wQ";
         court[60] = "wK";
         court[63] = "wR";
-        court[50] = "wP";
-        court[41] = "bN";
-        court[0] = "bB";
-        court[1] = "bB";
+        court[56] = "wR";
     }
 
     public static void MakeMove(int isOnSquare, int moveToSquare){
+        ComprehendMoveOrder.isOnSquare = -1;
         court[moveToSquare] = court[isOnSquare];
         court[isOnSquare] = "0";
         int[] secMover = CheckMoves.secondMover;
