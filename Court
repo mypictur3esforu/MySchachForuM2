@@ -1,5 +1,3 @@
-import com.sun.source.tree.WhileLoopTree;
-
 import java.util.Arrays;
 
 public class Court {
@@ -28,8 +26,9 @@ public class Court {
     public static void TestBordDefinition(){
         Arrays.fill(court, "0");
         court[0] = "wB";
+        court[2] = "bK";
         court[7] = "bR";
-        //court[1] = "bB";
+        court[1] = "bB";
         court[59] = "wQ";
         court[60] = "wK";
         court[63] = "wR";
@@ -37,16 +36,22 @@ public class Court {
     }
 
     public static void MakeMove(int isOnSquare, int moveToSquare){
+        OtherOccurrences.EnPassantable(isOnSquare, moveToSquare);
+        CheckMoves.KingMoves();
         ComprehendMoveOrder.isOnSquare = -1;
         court[moveToSquare] = court[isOnSquare];
         court[isOnSquare] = "0";
         int[] secMover = CheckMoves.secondMover;
-        if (secMover[0] != -1) {
+        if (secMover[1] == -2) {
+            Court.court[secMover[0]] = "0";
+        } else if (secMover[0] != -1) {
             Court.court[secMover[1]] = Court.court[secMover[0]];
             Court.court[secMover[0]] = "0";
-            Arrays.fill(CheckMoves.secondMover, -1);
         }
+        Arrays.fill(CheckMoves.secondMover, -1);
+        OtherOccurrences.PawnReachedEnd(moveToSquare);
         UI.UpdateUI();
         WhoseTurn.ChangeTurn();
+        OtherOccurrences.CheckMate();
     }
 }
