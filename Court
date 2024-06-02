@@ -25,14 +25,14 @@ public class Court {
 
     public static void TestBordDefinition(){
         Arrays.fill(court, "0");
-        court[0] = "wB";
-        court[2] = "bK";
+        court[0] = "bR";
+        court[4] = "bK";
         court[7] = "bR";
-        court[1] = "bB";
-        court[59] = "wQ";
+        court[51] = "bN";
+        court[45] = "wN";
+        court[56] = "wR";
         court[60] = "wK";
         court[63] = "wR";
-        court[56] = "wR";
     }
 
     public static void MakeMove(int isOnSquare, int moveToSquare){
@@ -44,7 +44,7 @@ public class Court {
         int[] secMover = CheckMoves.secondMover;
         if (secMover[1] == -2) {
             Court.court[secMover[0]] = "0";
-        } else if (secMover[0] != -1) {
+        } else if (secMover[0] != -1 && Usefull.GetSquaresPieceNotation(moveToSquare, Court.court).equals("K")) {
             Court.court[secMover[1]] = Court.court[secMover[0]];
             Court.court[secMover[0]] = "0";
         }
