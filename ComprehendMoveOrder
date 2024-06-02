@@ -2,6 +2,11 @@ public class ComprehendMoveOrder {
     static int moveOrder = 0, isOnSquare = -1, moveToSquare;
 
     public static void MoveOrderOrganizer(int buttonNumber){
+        if (!SafeLoadBoard.gameLoaded) {
+            SafeLoadBoard.filesSaved ++;
+            SafeLoadBoard.SafeBord();
+            SafeLoadBoard.gameLoaded = true;
+        }
         if (Usefull.CreateFieldValueArray(buttonNumber, Court.court)[0].equals("0") && moveOrder == 0) {
             //skip
         }else {
