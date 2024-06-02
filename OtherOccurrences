@@ -1,5 +1,6 @@
 public class OtherOccurrences {
     public static int enPassantSquare = -1;
+
     public static void PawnReachedEnd(int square){
         if (!Usefull.CheckIfPawn(square, Court.court)) {
             return;
