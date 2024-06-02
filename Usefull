@@ -1,0 +1,77 @@
+public class Usefull {
+    public static String GetSquaresPieceNotation(int square, String[] array){
+        String[] splitSquare = array[square].split("");
+        if (!splitSquare[0].equals("0")) {
+            return splitSquare[1];
+        }
+        return "0";
+    }
+
+    public static String GetColorOfSquaresPiece(int square, String[] bord){
+        String[] squareValue = CreateFieldValueArray(square, bord);
+        return ConvertColorShortcutToColor(squareValue[0]);
+    }
+
+    public static String[] CreateFieldValueArray(int square, String[] bord){
+        return bord[square].split("");
+    }
+
+    public static String ConvertColorShortcutToColor(String colorShortcut){
+        if (colorShortcut.equals("w")) {
+            return "white";
+        }
+        if (colorShortcut.equals("b")) {
+            return "black";
+        }
+        return "Error! (Convert Color Shortcut)";
+    }
+
+    public static int[] AddToIntArray(int toAdd, int[] array){
+        int[] spare = array;
+        array = new int[spare.length + 1];
+        System.arraycopy(spare, 0, array, 0, spare.length);
+        array[spare.length] = toAdd;
+        return array;
+    }
+
+    public static String[] AddStringToArray(String toAdd, String[] array){
+        String[] spare = array;
+        array = new String[spare.length + 1];
+        System.arraycopy(spare, 0, array, 0, spare.length);
+        array[spare.length] = toAdd;
+        return array;
+    }
+
+    public static int GetKingsPosition(String color, String[] bord){
+        for (int i = 0; i < bord.length; i++) {
+            if (GetSquaresPieceNotation(i, bord).equals("K") && GetColorOfSquaresPiece(i, bord).equals(color)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public static String[] SimulateMove(int isOnSquare, int moveToSquare, String[] array){
+        String[] bord = new String[array.length];
+        /*for (int i = 0; i < array.length; i++) {
+            bord[i] = array[i];
+        }*/
+        System.arraycopy(array, 0, bord, 0, array.length);
+        bord[moveToSquare] = bord[isOnSquare];
+        bord[isOnSquare] = "0";
+        return bord;
+    }
+
+    public static boolean CheckIfPawn(int square, String[] bord){
+        return Usefull.GetSquaresPieceNotation(square, Court.court).equals("P");
+    }
+
+    public static String OpposingColor(String color){
+        if (color.equals("white")) {
+            return "black";
+        } else if (color.equals("black")) {
+            return "white";
+        }
+        return "Error!";
+    }
+}
