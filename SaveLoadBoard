@@ -1,0 +1,116 @@
+import java.io.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.Scanner;
+
+public class SaveLoadBoard {
+    public static File saveBord, mainBord;
+    public static int filesSaved = 1;
+    public static boolean mainFileCreated = false;
+
+    public static void SafeBord(){
+        CreateFile();
+        Date dateNow = new Date();
+        WriteToFile(Arrays.toString(Court.court) + WhoseTurn.turn + "]" + dateNow, "bord_" + filesSaved +".txt");
+    }
+
+    public static void CreateFile(){
+        try {
+            saveBord = new File("bord_" + filesSaved + ".txt");
+            if (saveBord.createNewFile()) {
+                System.out.println("File created: " + saveBord.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+            if (saveBord.exists()) {
+                System.out.println("File name: " + saveBord.getName());
+                System.out.println("Absolute path: " + saveBord.getAbsolutePath());
+            } else {
+                System.out.println("The file does not exist.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+    }
+
+    public static void WriteToFile(String newInput, String fileName){
+        try{
+        FileWriter writeBoard = new FileWriter(fileName);
+        //newInput = "[".split(newInput)[0]; geht net weil, denkt die Klammer wär ne Regex
+        writeBoard.write(newInput /*.split("]")[0]*/);
+        writeBoard.close();
+        System.out.println("Successfully wrote to the file.");
+    } catch (IOException e) {
+        System.out.println("Error");
+        e.printStackTrace();
+    }
+    }
+
+    public static void LoadGame(int bordNumber){
+        File searchedGame = new File("bord_" + bordNumber + ".txt");
+        Court.court = ConvertStringToArrayBord(LoadFilesValues(searchedGame, "bord"));
+        WhoseTurn.turn = LoadFilesValues(searchedGame, "color");
+        UI.UpdateUI();
+    }
+
+    public static String LoadFilesValues(File file, String searchedValue){
+        String[] bord = new String[0];
+        try {
+            Scanner fileReader = new Scanner(file);
+            while (fileReader.hasNextLine()){
+                String data = fileReader.nextLine();
+                System.out.println(data);
+                bord = data.split("]");
+            }
+        } catch (FileNotFoundException e){
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+        return switch (searchedValue) {
+            case "bord" -> bord[0];
+            case "color" -> bord[1];
+            case "date" -> bord[2];
+            default -> bord[0];
+        };
+    }
+
+    public static String[] ConvertStringToArrayBord(String stringBord){
+        return stringBord.split(", ");
+    }
+
+    public static void CheckForMainFile(){
+        try {
+            mainBord = new File("info");
+            if (mainBord.createNewFile()) {
+                System.out.println(mainBord.getName() + " File created");
+                SafeBord();
+                WriteToFile(filesSaved + "", "info");
+            } else {
+                System.out.println("File already exists");
+                GetBords();
+            }
+        } catch (IOException e) {
+            System.out.println("Error! CheckMainBord)");
+            e.printStackTrace();
+        }
+        mainFileCreated = true;
+    }
+
+    public static void GetBords(){
+        try {
+            Scanner infoScanner = new Scanner(mainBord);
+            while (infoScanner.hasNextLine()){
+                String bords = infoScanner.nextLine();
+                //filesSaved = Integer.parseInt(bords);
+            }
+        }catch (IOException e){
+            System.out.println("Error! (get info Bord)");
+        }
+    }
+
+    public static String GetGamesDate(int gameNumber){
+        File tempFile = new File("bord_" + gameNumber + ".txt");
+        return LoadFilesValues(tempFile, "time");
+    }
+}
