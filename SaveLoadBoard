@@ -1,17 +1,19 @@
+import java.awt.*;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
-public class SaveLoadBoard {
+public class SafeLoadBoard {
     public static File saveBord, mainBord;
     public static int filesSaved = 1;
-    public static boolean mainFileCreated = false;
+    public static boolean gameLoaded = false;
 
     public static void SafeBord(){
         CreateFile();
         Date dateNow = new Date();
         WriteToFile(Arrays.toString(Court.court) + WhoseTurn.turn + "]" + dateNow, "bord_" + filesSaved +".txt");
+        WriteToFile(filesSaved + "", "info");
     }
 
     public static void CreateFile(){
@@ -48,6 +50,9 @@ public class SaveLoadBoard {
     }
 
     public static void LoadGame(int bordNumber){
+        gameLoaded = true;
+        UI.buttonGames[bordNumber - 1].setBackground(Color.green);
+        UI.buttonGames[bordNumber - 1].setText("This game is going to be loaded");
         File searchedGame = new File("bord_" + bordNumber + ".txt");
         Court.court = ConvertStringToArrayBord(LoadFilesValues(searchedGame, "bord"));
         WhoseTurn.turn = LoadFilesValues(searchedGame, "color");
@@ -94,7 +99,6 @@ public class SaveLoadBoard {
             System.out.println("Error! CheckMainBord)");
             e.printStackTrace();
         }
-        mainFileCreated = true;
     }
 
     public static void GetBords(){
@@ -103,6 +107,7 @@ public class SaveLoadBoard {
             while (infoScanner.hasNextLine()){
                 String bords = infoScanner.nextLine();
                 //filesSaved = Integer.parseInt(bords);
+                filesSaved = Integer.parseInt(bords);
             }
         }catch (IOException e){
             System.out.println("Error! (get info Bord)");
@@ -111,6 +116,6 @@ public class SaveLoadBoard {
 
     public static String GetGamesDate(int gameNumber){
         File tempFile = new File("bord_" + gameNumber + ".txt");
-        return LoadFilesValues(tempFile, "time");
+        return LoadFilesValues(tempFile, "date");
     }
 }
