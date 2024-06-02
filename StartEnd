@@ -1,143 +1,28 @@
 import javax.swing.*;
-import java.awt.*;
 
-public class UI {
-    //first white, then black
-    public static String[] uniPieces = new String[]{"♖","♘", "♗", "♕", "♔", "♜", "♞", "♝", "♛", "♚", "none"};
-    public static String[] pawns = new String[]{"♙", "♟"};
-    public static JPanel field = new JPanel(new GridLayout(8,8)), sidebar = new JPanel();
-    public static JButton[] buttons = new JButton[64];
-    public static JFrame frame = new JFrame();
-    static String color = "black";
-    public static Color black, white;
-    public static JButton startButton, winner;
+public class StartEnd {
+    public static String winner = "";
 
-    public static void main(String[] args) {
-        Court.BordDefinition();
-        //Court.TestBordDefinition();
-        CreateUI();
-        StartScreen();
-    }
-
-    public static void CreateUI(){
-        frame.add(sidebar);
-        String colour = "black";
-        for (int i = 0; i < 64; i++) {
-            JButton button = new JButton(ButtonDefinition(i));
-            button.setFont(new Font(button.getFont().getFontName(), Font.PLAIN, 25));
-            button.setBackground(BackgroundColor(i));
-            int finalI = i;
-            button.addActionListener(ev -> {
-                ButtonPressed(finalI);
-            });
-            buttons[i] = button;
-           // System.out.println(Arrays.toString(buttons));
-            field.add(button);
-        }
-        //frame.add(field);
-        //frame.pack();
-        frame.setSize(500, 500);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
-
-    public static void UpdateUI(){
-        color = "black";
-        for (int i = 0; i < buttons.length; i++) {
-            //System.out.println(i +"\n" + Arrays.toString(buttons));
-            buttons[i].setText(ButtonDefinition(i));
-            buttons[i].setBackground(BackgroundColor(i));
-        }
-        if (ComprehendMoveOrder.isOnSquare != -1) {
-            for (int i = 0; i < GetPossibleMoves.possibleMoves.length; i++) {
-                buttons[GetPossibleMoves.possibleMoves[i]].setBackground(new Color(88, 239, 152));
-            }
-        }
-        if (ComprehendMoveOrder.isOnSquare != -1) {
-            buttons[ComprehendMoveOrder.isOnSquare].setBackground(new Color(243, 109, 226));
-        }
-    }
-
-    public static void ButtonPressed(int buttonNumber){
-        //System.out.println(buttonNumber);
-        ComprehendMoveOrder.MoveOrderOrganizer(buttonNumber);
-    }
-
-    static Color BackgroundColor(int buttonNumber){
-        color= SwitchColor(color);
-        if (buttonNumber % 8 == 0 && buttonNumber != 0) {
-            //System.out.println(i);
-            color = SwitchColor(color);
-            //System.out.println(colour);
-        }
-        //System.out.println("Button: "+colour);
-        if (color.equals("white")) {
-            return white = new Color(236, 255, 255);
-        }else{
-            //return Color.lightGray;
-            return black = new Color(18, 160, 177);
-        }
-    }
-
-    static String SwitchColor(String colour){
-        if (colour.isBlank()) {
-            return "black";
-        }
-        if (colour.equals("white")) {
-            return "black";
-        }else{
-            return "white";
-        }
-    }
-
-    public static String ButtonDefinition(int buttonNumber){
-        int pieceNumber;
-        String[] fieldValue = new String[3];
-        System.arraycopy(Court.court[buttonNumber].split(""), 0, fieldValue, 0, Court.court[buttonNumber].split("").length);
-        if (fieldValue[0].equals("b")) {
-            pieceNumber = 5;
-        }else{
-            pieceNumber = 0;
-        }
-        if (fieldValue[0].equals("0")) {
-            return "";
-        }
-        switch (fieldValue[1]){
-            case "P" -> {if(pieceNumber != 0)pieceNumber = 1;}
-            case "R" -> pieceNumber += 0;
-            case "N" -> pieceNumber += 1;
-            case "B" -> pieceNumber += 2;
-            case "Q" -> pieceNumber += 3;
-            case "K" -> pieceNumber += 4;
-            case null -> pieceNumber = 10;
-            default -> pieceNumber = 10;
-        }
-        if (fieldValue[1].equals("P")) {
-            return pawns[pieceNumber];
-        }else if(!fieldValue[1].isEmpty()){
-            return uniPieces[pieceNumber];
-        }
-        return "";
-    }
-
-    public static void StartScreen(){
-        startButton = new JButton("STARTEN");
-        startButton.setFont(new Font("Serif", Font.PLAIN, 50));
-        startButton.setBackground(new Color(0x9D0BFABA, true));
-        //startButton.setSize(400, 400);
-        startButton.addActionListener(ev->{
-            StartEnd.StartGame();
-        });
-        frame.add(startButton);
-    }
-
-    public static void EndScreen(String colorWon){
-        UI.frame.remove(UI.field);
-        winner = new JButton(colorWon);
-        winner.addActionListener(ev -> {
-            StartEnd.NewGame();
-        });
-        UI.frame.add(winner);
+    public static void StartGame(){
+        UI.bigPanel.remove(UI.startScreen);
+        UI.CreateSideBar();
+        UI.bigPanel.add(UI.field);
+        UI.bigPanel.add(UI.sidebar);
+        UI.bigPanel.setVisible(true);
         UI.frame.setVisible(true);
+    }
+
+    public static void NewGame(){
+        UI.bigPanel.remove(UI.winner);
+        //Court.BordDefinition();
+        UI.bigPanel.add(UI.field);
+        //UI.field.setVisible(true);
+        //UI.bigPanel.setVisible(true);
+        UI.frame.setVisible(true);
+    }
+
+    public static void End(){
+        //UI.frame.remove(UI.field);
+        //UI.EndScreen(Usefull.OpposingColor(WhoseTurn.turn));
     }
 }
