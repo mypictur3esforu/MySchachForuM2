@@ -30,18 +30,6 @@ public class CheckMoves {
         return CheckIfPieceCanBeTaken(isOnSquare, moveToSquare);
     }
 
-    static boolean CheckIfPinned(int isOnSquare, int moveToSquare){
-        //gib zurück, ob das Feld FindeColorKönigsPosition auf dem Brett, auf dem der Zug bereits gezogen wurde im Schach steht; zerstört das ganze Programm
-        //return FindCheck.CheckForChecks(Usefull.GetKingsPosition(WhoseTurn.turn, Court.court), WhoseTurn.turn, Usefull.SimulateMove(isOnSquare, moveToSquare, Court.court));
-        if (FindCheck.CheckForChecks(Usefull.GetKingsPosition(WhoseTurn.turn, Court.court), WhoseTurn.turn, Court.court)) {
-            return true;
-        }
-        if (FindCheck.CheckForChecks(Usefull.GetKingsPosition(WhoseTurn.turn, Court.court), WhoseTurn.turn, Usefull.SimulateMove(isOnSquare, moveToSquare, Court.court))) {
-            System.out.println("This piece is pinned and is not allowed to go there!");
-            return false;
-        }else return true;
-    }
-
     static boolean CheckIfPieceCanBeTaken(int isOnSquare, int moveToSquare){
         if(Usefull.GetColorOfSquaresPiece(isOnSquare, Court.court).equals(Usefull.GetColorOfSquaresPiece(moveToSquare, Court.court))){
             System.out.println("You can not take your own pieces!");
@@ -154,7 +142,7 @@ public class CheckMoves {
     }
 
     static boolean CheckKnightLineJump(int isOnSquare, int moveToSquare){
-        return Math.abs(moveToSquare % 8 - isOnSquare % 8) >= 2; // line jump true
+        return Math.abs(moveToSquare % 8 - isOnSquare % 8) > 2; // line jump true
     }
 
     static boolean CheckLMovement(int isOnSquare, int moveToSquare){
