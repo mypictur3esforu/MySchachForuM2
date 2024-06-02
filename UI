@@ -1,26 +1,40 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class UI {
     //first white, then black
     public static String[] uniPieces = new String[]{"♖","♘", "♗", "♕", "♔", "♜", "♞", "♝", "♛", "♚", "none"};
     public static String[] pawns = new String[]{"♙", "♟"};
-    public static JPanel field = new JPanel(new GridLayout(8,8)), sidebar = new JPanel();
-    public static JButton[] buttons = new JButton[64];
     public static JFrame frame = new JFrame();
+    public static JPanel field = new JPanel(new GridLayout(8,8)), sidebar = new JPanel(new GridLayout(3, 1));
+    public static JButton[] buttons = new JButton[64], buttonGames = new JButton[SaveLoadBoard.filesSaved];
+    public static JPanel bigPanel = new JPanel(new GridLayout(1, 2  )), startScreen = new JPanel(new GridLayout(2, 1));
+    public static JPanel games = new JPanel(new GridLayout(buttonGames.length/2, buttonGames.length/2));
     static String color = "black";
-    public static Color black, white;
-    public static JButton startButton, winner;
+    public static Color black, white, savingColor = new Color(0xFFEBBDFD, true);
+    public static JButton startButton, winner, settings, archive, saveBord;
+    public static JButton loadBord;
+
+    //Stack Overflow
+    public static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+    public static int screenWidth =  screenSize.width;
+    public static int screenHeight = screenSize.height;
+
+    static Dimension minimum = new Dimension(500, 500);
 
     public static void main(String[] args) {
+        System.out.println("Hallo");
         Court.BordDefinition();
         //Court.TestBordDefinition();
+        SaveLoadBoard.CheckForMainFile();
         CreateUI();
-        StartScreen();
+        CreateStartScreen();
     }
 
     public static void CreateUI(){
-        frame.add(sidebar);
+        //CreateSideBar();
         String colour = "black";
         for (int i = 0; i < 64; i++) {
             JButton button = new JButton(ButtonDefinition(i));
@@ -30,15 +44,17 @@ public class UI {
             button.addActionListener(ev -> {
                 ButtonPressed(finalI);
             });
+            button.setPreferredSize(new Dimension(60,60));
+            button.setMaximumSize( new Dimension(60, 60));
             buttons[i] = button;
            // System.out.println(Arrays.toString(buttons));
             field.add(button);
         }
         //frame.add(field);
-        //frame.pack();
-        frame.setSize(500, 500);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        Scale();
     }
 
     public static void UpdateUI(){
@@ -94,6 +110,11 @@ public class UI {
         int pieceNumber;
         String[] fieldValue = new String[3];
         System.arraycopy(Court.court[buttonNumber].split(""), 0, fieldValue, 0, Court.court[buttonNumber].split("").length);
+        if (fieldValue[0].equals("[")) {
+            Court.court[buttonNumber] = fieldValue[1] + fieldValue[2];
+            fieldValue[0] = fieldValue[1];
+            fieldValue[1] = fieldValue[2];
+        }
         if (fieldValue[0].equals("b")) {
             pieceNumber = 5;
         }else{
@@ -120,24 +141,72 @@ public class UI {
         return "";
     }
 
-    public static void StartScreen(){
-        startButton = new JButton("STARTEN");
+    public static void CreateStartScreen(){
         startButton.setFont(new Font("Serif", Font.PLAIN, 50));
-        startButton.setBackground(new Color(0x9D0BFABA, true));
+        startButton.setBackground(new Color(0xFF40F4CB, true));
         //startButton.setSize(400, 400);
         startButton.addActionListener(ev->{
             StartEnd.StartGame();
         });
         frame.add(startButton);
+        startScreen.add(startButton);
+        //frame.add(bigPanel);
+        loadBord = new JButton("Load old game:");
+        loadBord.setFont(new Font("Arial", Font.ITALIC, 50));
+        loadBord.setForeground(Color.BLACK);
+        loadBord.setBackground(savingColor);
+        for (int i = 1; i <= SaveLoadBoard.filesSaved; i++) {
+            JButton gameLoadButton = new JButton("Game " + i + " from " + SaveLoadBoard.GetGamesDate(i));
+            gameLoadButton.setBackground(Color.gray);
+            buttonGames[i] = gameLoadButton;
+            int finalI = i;
+            gameLoadButton.addActionListener(e -> {
+                SaveLoadBoard.LoadGame(finalI);
+            });
+        }
+        //bigPanel.add(loadBord);
+        startScreen.add(loadBord);
+        bigPanel.add(startScreen);
+        frame.add(bigPanel);
     }
 
     public static void EndScreen(String colorWon){
-        UI.frame.remove(UI.field);
+        //frame.remove(UI.field);
+        field.setVisible(false);
         winner = new JButton(colorWon);
         winner.addActionListener(ev -> {
             StartEnd.NewGame();
         });
-        UI.frame.add(winner);
-        UI.frame.setVisible(true);
+        bigPanel.add(winner);
     }
+
+    public static void Scale(){
+        Dimension frameDimension = new Dimension(screenWidth, screenWidth);
+        if (screenHeight < screenWidth) {
+            frameDimension = new Dimension(screenHeight, screenHeight);
+        }
+        frame.setPreferredSize(frameDimension);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setMinimumSize(minimum);
+        int fieldSize = frame.getWidth();
+        if (frame.getWidth() < frame.getHeight()) {
+            fieldSize = frame.getHeight();
+        }
+        field.setSize((int) (fieldSize / 1.1), (int) (fieldSize / 1.1));
+        }
+
+        public static void CreateSideBar(){
+        settings = new JButton("Settings");
+        settings.setBackground(new Color(0x0EE6E6));
+        sidebar.add(settings);
+        archive = new JButton("Archive");
+        archive.setBackground(Color.PINK);
+        sidebar.add(archive);
+        saveBord = new JButton("Save Bord");
+        saveBord.setBackground(savingColor);
+        saveBord.addActionListener(ev->{
+            SaveLoadBoard.SafeBord();
+        });
+        sidebar.add(saveBord);
+        }
 }
