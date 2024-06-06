@@ -10,7 +10,7 @@ public class UI {
     public static JPanel field = new JPanel(new GridLayout(8,8)), sidebar = new JPanel(new GridLayout(3, 1));
     public static JButton[] buttons = new JButton[64], buttonGames = new JButton[0];
     public static JPanel bigPanel = new JPanel(new GridLayout(1, 2  )), startScreen = new JPanel(new GridLayout(3, 1));
-    public static JPanel games = new JPanel(/*new GridLayout(2,1)*/);
+    public static JPanel games = new JPanel(new GridLayout(2,1)), higherLevelField = new JPanel();
     static String color = "black";
     public static Color black, white, savingColor = new Color(0xFFEBBDFD, true);
     public static JButton startButton, winner, settings, archive, saveBord;
@@ -30,7 +30,6 @@ public class UI {
         SafeLoadBoard.CheckForMainFile();
         CreateUI();
         CreateStartScreen();
-
     }
 
     public static void CreateUI(){
@@ -147,7 +146,8 @@ public class UI {
         startButton.setBackground(new Color(0xFF40F4CB, true));
         startButton.setSize(400, 400);
         startButton.addActionListener(ev->{
-            StartEnd.StartGame();
+            //StartEnd.StartGame();
+            CreateGameScreen();
         });
         //frame.add(startButton);
         startScreen.add(startButton);
@@ -181,6 +181,7 @@ public class UI {
 
     public static void EndScreen(String colorWon){
         //frame.remove(UI.field);
+        frame.removeAll();
         field.setVisible(false);
         winner = new JButton(colorWon);
         winner.addActionListener(ev -> {
@@ -189,19 +190,31 @@ public class UI {
         bigPanel.add(winner);
     }
 
+    public static void CreateGameScreen(){
+        UI.bigPanel.remove(UI.startScreen);
+        //UI.CreateSideBar();
+        higherLevelField.add(field);
+        UI.bigPanel.add(UI.higherLevelField);
+        UI.bigPanel.add(UI.sidebar);
+        UI.bigPanel.setVisible(true);
+        UI.frame.setVisible(true);
+    }
+
     public static void Scale(){
-        Dimension frameDimension = new Dimension(screenWidth, screenWidth);
-        if (screenHeight < screenWidth) {
-            frameDimension = new Dimension(screenHeight, screenHeight);
-        }
-        frame.setPreferredSize(frameDimension);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        frame.setMinimumSize(minimum);
+        Dimension frameDimension = new Dimension(screenWidth, screenHeight);
+//        if (screenHeight < screenWidth) {
+//            frameDimension = new Dimension(screenHeight, screenHeight);
+//        }
+//        frame.setPreferredSize(frameDimension);
+//        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+//        frame.setMinimumSize(frameDimension);
+        frame.setSize(frameDimension);
         int fieldSize = frame.getWidth();
-        if (frame.getWidth() < frame.getHeight()) {
+        if (frame.getWidth() > frame.getHeight()) {
             fieldSize = frame.getHeight();
         }
-        field.setSize((int) (fieldSize / 1.1), (int) (fieldSize / 1.1));
+        System.out.println("fielSize: " + fieldSize);
+        field.setSize(fieldSize * 2, fieldSize);
         }
 
         public static void CreateSideBar(){
